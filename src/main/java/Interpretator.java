@@ -5,13 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.math.BigDecimal;
 public class Interpretator {
-    //number
-    private BigDecimal amount;
 
-    public Interpretator(String s) {
-        this.amount = new BigDecimal( s );
-    }
-    public String numTOstr() {
+    public static String numTOstr(String amountIn) {
         DigestReader temp = new DigestReader();
         String[][] rodSlov = {
                 {"","один","два","три","четыре","пять","шесть","семь","восемь","девять"},
@@ -22,19 +17,32 @@ public class Interpretator {
         String[] str11 = temp.getElevNine();
         String[] str10 = temp.getDickers();
         String[][] forms = temp.getExps();
+        String amount = new String("");
         String verbalNumber = "";
-        ArrayList segments = new ArrayList();
-        if(amount.toString().length()>=19)
+        if(amountIn.charAt(0)=='-')
         {
-            String numberStr = amount.toString();
-            String[] numberBySeg = new String[amount.toString().length()%3+1];
-            numberBySeg = createDisCharges(numberStr,numberBySeg);
+            verbalNumber+="минус ";
+            amount = amountIn.substring(1);
+        }else{
+        amount = amountIn;
+        }
+        ArrayList segments = new ArrayList();
+        if(amount.toString().length()>=0)
+        {
+            if (amount.equals("0"))
+            {
+                verbalNumber = "ноль";
+                return verbalNumber;
+            }
+            String[] numberBySeg = new String[amount.length()%3+1];
+            numberBySeg = createDisCharges(amount,numberBySeg);
             //String [] numberSeg = new String[amount.toString().length()%3+1];
             for (int i=numberBySeg.length;i>0;i--)
             {
                 segments.add(Long.parseLong(numberBySeg[i-1]));
             }
-        }else{
+
+        }/*else{
             long number = amount.longValue();
             long number_temp = number;
             while(number_temp>999) {
@@ -48,7 +56,7 @@ public class Interpretator {
                 verbalNumber = "ноль";
                 return verbalNumber;
             }
-        }
+        }*/
 
 
         // Разбиватель суммы на сегменты по 3 цифры с конца
@@ -76,27 +84,27 @@ public class Interpretator {
             int r2 = (int)Integer.valueOf( rs.substring(1,2) ); //вторая
             int r3 = (int)Integer.valueOf( rs.substring(2,3) ); //третья
             int r22= (int)Integer.valueOf( rs.substring(1,3) ); //вторая и третья
-            // Супер-нано-анализатор циферок
+            // analuzing dgigts
             if (ri>99) verbalNumber += str100[r1]+" "; // Сотни
             if (r22>=20) {// >20
                     verbalNumber += str10[r2] + " ";
                     verbalNumber += rodSlov[rodDefSlova][r3] + " ";
             }
             else { // <=20
-                if (r22>9) verbalNumber += str11[r22-9]+" "; // 10-20
-                else verbalNumber += rodSlov[ rodDefSlova ][r3]+" "; // 0-9
+                if (r22 > 9) verbalNumber += str11[r22 - 9] + " "; // 10-20
+                else verbalNumber += rodSlov[rodDefSlova][r3] + " "; // 0-9
             }
-            // Единицы измерения (рубли...)
             lev--;
                 verbalNumber += morph(ri, forms[lev ][0], forms[lev][1], forms[lev][2])+" ";
 
         }
-        return verbalNumber;
+
+        return formatStr(verbalNumber);
     }
 
 
 
-    public String[] createDisCharges(String number, String[] discharges)
+    private static String[] createDisCharges(String number, String[] discharges)
     {
         int ost = number.length()%3;
         String numberRev=new String();
@@ -123,7 +131,7 @@ public class Interpretator {
         return (discharges);
     }
 
-    public String revertString(String s)
+    public static String revertString(String s)
     {
         String result = new String();
         for (int i = s.length() - 1; i >= 0; i--)
@@ -133,7 +141,7 @@ public class Interpretator {
         return result;
     }
 
-    public String[] revertSubStrings(String[] temp_in,String[] temp_out)
+    private static String[] revertSubStrings(String[] temp_in,String[] temp_out)
     {
         for (int i=0;i<temp_in.length;i++)
         {
@@ -142,6 +150,14 @@ public class Interpretator {
         return temp_out;
     }
 
+    private static String formatStr(String s)
+    {
+        while(s.contains("  ")) {
+            String replace = s.replace("  ", " ");
+            s=replace;
+        }
+        return s;
+    }
     /**
      * Склоняем словоформу
      * @param n Long количество объектов

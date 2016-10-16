@@ -25,7 +25,7 @@ public class DigestReader {
        return null;
    }
 
-    public String[][] readDigestExps(File file) {
+    public String[][] readDigest_1(File file) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return (mapper.readValue(file,String[][].class));
@@ -34,6 +34,7 @@ public class DigestReader {
         }
         return null;
     }
+
     public String[] getNumerals()
     {
         return numerals;
@@ -57,7 +58,7 @@ public class DigestReader {
     }
 
     public DigestReader(){
-        exps = this.readDigestExps(new File("/home/rodya/IdeaProjects/Processor/src/main/resources/Exponents.json"));
+        exps = this.readDigest_1(new File("/home/rodya/IdeaProjects/Processor/src/main/resources/Exponents.json"));
         numerals= this.readDigest(new File("/home/rodya/IdeaProjects/Processor/src/main/resources/Numerals.json"));
         dickers= this.readDigest(new File("/home/rodya/IdeaProjects/Processor/src/main/resources/Dickers.json"));
         hundreds= this.readDigest(new File("/home/rodya/IdeaProjects/Processor/src/main/resources/Hundreds.json"));
