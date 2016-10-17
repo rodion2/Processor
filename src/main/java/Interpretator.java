@@ -36,56 +36,33 @@ public class Interpretator {
             }
             String[] numberBySeg = new String[amount.length()%3+1];
             numberBySeg = createDisCharges(amount,numberBySeg);
-            //String [] numberSeg = new String[amount.toString().length()%3+1];
             for (int i=numberBySeg.length;i>0;i--)
             {
                 segments.add(Long.parseLong(numberBySeg[i-1]));
             }
 
-        }/*else{
-            long number = amount.longValue();
-            long number_temp = number;
-            while(number_temp>999) {
-                long segment = number_temp/1000;
-                segments.add( number_temp-(segment*1000) );
-                number_temp=segment;
-            }
-            segments.add( number_temp );
-            Collections.reverse(segments);
-            if (number== 0) {// если Ноль
-                verbalNumber = "ноль";
-                return verbalNumber;
-            }
-        }*/
+        }
 
 
-        // Разбиватель суммы на сегменты по 3 цифры с конца
-
-
-
-        // Анализируем сегменты
-
-
-        // Больше нуля
         int lev = segments.size();
-        for (int i= 0; i<segments.size(); i++ ) {// перебираем сегменты
-            int rodDefSlova = (int)Integer.valueOf( forms[lev-1][3].toString() );// определяем род
-            int ri = (int)Integer.valueOf( segments.get(i).toString() );// текущий сегмент
-            if (ri== 0 && lev>1) {// если сегмент ==0 И не последний уровень(там Units)
+        for (int i= 0; i<segments.size(); i++ ) {// iterate segments
+            int rodDefSlova = (int)Integer.valueOf( forms[lev-1][3].toString() );// identification sex of word
+            int ri = (int)Integer.valueOf( segments.get(i).toString() );// present segment
+            if (ri== 0 && lev>1) {// if segment equals 000
                 lev--;
                 continue;
             }
-            String rs = String.valueOf(ri); // число в строку
-            // нормализация
-            if (rs.length()==1) rs = "00"+rs;// два нулика в префикс?
-            if (rs.length()==2) rs = "0"+rs; // или лучше один?
-            // получаем циферки для анализа
-            int r1 = (int)Integer.valueOf( rs.substring( 0,1) ); //первая цифра
-            int r2 = (int)Integer.valueOf( rs.substring(1,2) ); //вторая
-            int r3 = (int)Integer.valueOf( rs.substring(2,3) ); //третья
-            int r22= (int)Integer.valueOf( rs.substring(1,3) ); //вторая и третья
-            // analuzing dgigts
-            if (ri>99) verbalNumber += str100[r1]+" "; // Сотни
+            String rs = String.valueOf(ri);
+
+            if (rs.length()==1) rs = "00"+rs;
+            if (rs.length()==2) rs = "0"+rs;
+
+            int r1 = (int)Integer.valueOf( rs.substring( 0,1) ); //first number xNN
+            int r2 = (int)Integer.valueOf( rs.substring(1,2) ); //second NxN
+            int r3 = (int)Integer.valueOf( rs.substring(2,3) ); //NNx
+            int r22= (int)Integer.valueOf( rs.substring(1,3) ); //Nxx
+            // analuzing digigts
+            if (ri>99) verbalNumber += str100[r1]+" "; // hundreds
             if (r22>=20) {// >20
                     verbalNumber += str10[r2] + " ";
                     verbalNumber += rodSlov[rodDefSlova][r3] + " ";
@@ -99,7 +76,7 @@ public class Interpretator {
 
         }
 
-        return formatStr(verbalNumber);
+        return formatStr(verbalNumber).substring(0,formatStr(verbalNumber).length()-1);
     }
 
 
@@ -158,14 +135,10 @@ public class Interpretator {
         }
         return s;
     }
-    /**
-     * Склоняем словоформу
-     * @param n Long количество объектов
-     * @param f1 String вариант словоформы для одного объекта
-     * @param f2 String вариант словоформы для двух объектов
-     * @param f5 String вариант словоформы для пяти объектов
-     * @return String правильный вариант словоформы для указанного количества объектов
-     */
+
+
+
+    //creating right form of word
     public static String morph(long n, String f1, String f2, String f5) {
         n = Math.abs(n) % 100;
         long n1 = n % 10;

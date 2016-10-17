@@ -2,6 +2,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Created by rodya on 12.10.16.
@@ -58,10 +59,12 @@ public class DigestReader {
     }
 
     public DigestReader(){
-        exps = this.readDigest_1(new File("/home/rodya/IdeaProjects/Processor/src/main/resources/Exponents.json"));
-        numerals= this.readDigest(new File("/home/rodya/IdeaProjects/Processor/src/main/resources/Numerals.json"));
-        dickers= this.readDigest(new File("/home/rodya/IdeaProjects/Processor/src/main/resources/Dickers.json"));
-        hundreds= this.readDigest(new File("/home/rodya/IdeaProjects/Processor/src/main/resources/Hundreds.json"));
-        elevNine=this.readDigest(new File("/home/rodya/IdeaProjects/Processor/src/main/resources/ElevNine.json"));
+
+
+        exps = this.readDigest_1(new File("src/main/resources/Exponents.json"));
+        numerals= this.readDigest(new File("src/main/resources/Numerals.json"));
+        dickers= this.readDigest(new File("src/main/resources/Dickers.json"));
+        hundreds= this.readDigest(new File("src/main/resources/Hundreds.json"));
+        elevNine=this.readDigest(new File("src/main/resources/ElevNine.json"));
     }
 }
