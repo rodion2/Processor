@@ -59,12 +59,11 @@ public class DigestReader {
     }
 
     public DigestReader(){
-
-
         exps = this.readDigest_1(new File("src/main/resources/Exponents.json"));
         numerals= this.readDigest(new File("src/main/resources/Numerals.json"));
         dickers= this.readDigest(new File("src/main/resources/Dickers.json"));
         hundreds= this.readDigest(new File("src/main/resources/Hundreds.json"));
         elevNine=this.readDigest(new File("src/main/resources/ElevNine.json"));
     }
+
 }
