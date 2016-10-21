@@ -121,35 +121,35 @@ public class Processor {
             /**identification kind words*/
             int kindDefWord = Integer.valueOf(formsExps[lev - 1][3].toString());
             /** present segment*/
-            int ri = Integer.valueOf(segments.get(i).toString());
+            int digitI = Integer.valueOf(segments.get(i).toString());
             /** if segment equals 000*/
-            if (ri == 0 && lev > 1) {
+            if (digitI == 0 && lev > 1) {
                 lev--;
                 continue;
             }
-            String rs = String.valueOf(ri);
+            String rs = String.valueOf(digitI);
 
             if (rs.length() == 1) rs = "00" + rs;
             if (rs.length() == 2) rs = "0" + rs;
             /**Getting first numeral from digit. Looks like xNN*/
-            int r1 = Integer.valueOf(rs.substring(0, 1));
+            int numNumerals = Integer.valueOf(rs.substring(0, 1));
             /**Getting second numeral from digit. Looks like NxN*/
-            int r2 = Integer.valueOf(rs.substring(1, 2));
+            int numDecimals = Integer.valueOf(rs.substring(1, 2));
             /**Getting third numeral from digit. Looks like NNx*/
-            int r3 = Integer.valueOf(rs.substring(2, 3));
+            int numHundreds = Integer.valueOf(rs.substring(2, 3));
             /**Getting two numerals from digit. Looks like Nxx*/
-            int r22 = Integer.valueOf(rs.substring(1, 3));
+            int numDickers = Integer.valueOf(rs.substring(1, 3));
             /**Analyzing digits.*/
-            if (ri > 99) verbalNumber += hundreds[r1] + " "; // hundreds
-            if (r22 >= 20) {// >20
-                verbalNumber += dickers[r2] + " ";
-                verbalNumber += kindWord[kindDefWord][r3] + " ";
+            if (digitI > 99) verbalNumber += hundreds[numNumerals] + " "; // hundreds
+            if (numDickers >= 20) {// >20
+                verbalNumber += dickers[numDecimals] + " ";
+                verbalNumber += kindWord[kindDefWord][numHundreds] + " ";
             } else { // <=20
-                if (r22 > 9) verbalNumber += tenNineteen[r22 - 9] + " "; // 10-20
-                else verbalNumber += kindWord[kindDefWord][r3] + " "; // 0-9
+                if (numDickers > 9) verbalNumber += tenNineteen[numDickers - 9] + " "; // 10-20
+                else verbalNumber += kindWord[kindDefWord][numHundreds] + " "; // 0-9
             }
             lev--;
-            verbalNumber += morph(ri, formsExps[lev][0], formsExps[lev][1], formsExps[lev][2]) + " ";
+            verbalNumber += morph(digitI, formsExps[lev][0], formsExps[lev][1], formsExps[lev][2]) + " ";
 
         }
         return verbalNumber;
