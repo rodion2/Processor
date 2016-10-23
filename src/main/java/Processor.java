@@ -45,6 +45,10 @@ public class Processor {
      */
     private String verbalNumber;
     /**
+     * Contains entered number.
+     */
+    private static String inputNumber;
+    /**
      * Contains kinds of numerals.
      */
     private static String[][] kindWord = {
@@ -75,16 +79,22 @@ public class Processor {
      * @Code checkAmount
      */
     private String checkAmount(String amountIn) {
-        if (amountIn.charAt(0) == '-') {
-            verbalNumber += "минус ";
-            amount = amountIn.substring(1);
-        } else {
-            amount = amountIn;
+        try {
+            if (amountIn.charAt(0) == '-') {
+                verbalNumber += "минус ";
+                amount = amountIn.substring(1);
+            } else {
+                amount = amountIn;
+            }
+
+            if (amount.equals("0")) {
+                verbalNumber = "ноль";
+            }
+        } catch (StringIndexOutOfBoundsException ex) {
+            System.err.println("Input string is empty, please, check input data.");
+            System.exit(1);
         }
 
-        if (amount.equals("0")) {
-            verbalNumber = "ноль";
-        }
         return amount;
     }
 
@@ -97,13 +107,17 @@ public class Processor {
      */
     private ArrayList<Long> createSegments(String amount) {
         ArrayList<Long> segments = new ArrayList<Long>();
-        if (amount.toString().length() >= 0) {
-
-            String[] numberByDigits = new String[amount.length() % 3 + 1];
-            numberByDigits = createDigits(amount, numberByDigits);
-            for (int i = numberByDigits.length; i > 0; i--) {
-                segments.add(Long.parseLong(numberByDigits[i - 1]));
+        try {
+            if (amount.toString().length() >= 0) {
+                String[] numberByDigits = new String[amount.length() % 3 + 1];
+                numberByDigits = createDigits(amount, numberByDigits);
+                for (int i = numberByDigits.length; i > 0; i--) {
+                    segments.add(Long.parseLong(numberByDigits[i - 1]));
+                }
             }
+        } catch (NumberFormatException e) {
+            System.err.println("Incorrect data entered. Check for unexpected symbols in input data.");
+            System.exit(1);
         }
         return segments;
     }
@@ -119,7 +133,13 @@ public class Processor {
         /** iterate segments*/
         for (int i = 0; i < segments.size(); i++) {
             /**identification kind words*/
-            int kindDefWord = Integer.valueOf(formsExps[lev - 1][3].toString());
+            int kindDefWord = 0;
+            try {
+                kindDefWord = Integer.valueOf(formsExps[lev - 1][3].toString());
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.err.println("Enterred number is a very long. Enter he number which consist of less than 63 numerals.");
+                System.exit(1);
+            }
             /** present segment*/
             int digitI = Integer.valueOf(segments.get(i).toString());
             /** if segment equals 000*/
@@ -149,8 +169,12 @@ public class Processor {
                 else verbalNumber += kindWord[kindDefWord][numHundreds] + " "; // 0-9
             }
             lev--;
-            verbalNumber += morph(digitI, formsExps[lev][0], formsExps[lev][1], formsExps[lev][2]) + " ";
-
+            try {
+                verbalNumber += morph(digitI, formsExps[lev][0], formsExps[lev][1], formsExps[lev][2]) + " ";
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.err.println("Incorrect input.");
+                System.exit(1);
+            }
         }
         return verbalNumber;
     }
@@ -170,8 +194,14 @@ public class Processor {
 
         String verbal = processing(segments);
 
-
-        return formatStr(verbal).substring(0, formatStr(verbal).length() - 1);
+        String verbalOut = new String();
+        try {
+            verbalOut = formatStr(verbal).substring(0, formatStr(verbal).length() - 1);
+        } catch (StringIndexOutOfBoundsException ex) {
+            System.err.println("Incorrect data entered. Input string may be empty, or contains unresolved symbols.");
+            System.exit(1);
+        }
+        return verbalOut;
     }
 
 
@@ -244,12 +274,12 @@ public class Processor {
      * @param genitiveForm - form of word Ex:тысяч, миллионов etc.
      * @param initialForm  - form of word Ex.тысяча,миллион:
      * @param pluralForm-  plural form of word Ex.: тысячи,миллиона etc.
-     * @param n            - number, for which form will be selected.
+     * @param num          - number, for which form will be selected.
      */
-    public static String morph(long n, String initialForm, String pluralForm, String genitiveForm) {
-        n = Math.abs(n) % 100;
-        long n1 = n % 10;
-        if (n > 10 && n < 20) return genitiveForm;
+    public static String morph(long num, String initialForm, String pluralForm, String genitiveForm) {
+        num = Math.abs(num) % 100;
+        long n1 = num % 10;
+        if (num > 10 && num < 20) return genitiveForm;
         if (n1 > 1 && n1 < 5) return pluralForm;
         if (n1 == 1) return initialForm;
         return genitiveForm;
@@ -259,7 +289,8 @@ public class Processor {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Processor proc = new Processor();
-        String inputNumber = proc.numTOstr(in.nextLine());
+        inputNumber = proc.numTOstr(in.nextLine());
+        in.close();
         System.out.println(inputNumber);
     }
 }
